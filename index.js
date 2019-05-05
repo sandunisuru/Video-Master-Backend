@@ -41,8 +41,6 @@ app.post('/video', (req, res) => {
                 }
             });
             
-            console.log(info)
-    
             res.send({meta: {id: info.id, source: source, title:info.fulltitle, duration: info._duration_hms,  thumbnails: thumbnails, formats: formats.reverse()}});
     
         }
