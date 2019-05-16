@@ -72,6 +72,7 @@ app.post('/report', (req, res) => {
       transporter.sendMail(mailOptions, function(error, info){
         if (error) {
             res.send({ status: 501, message: error});
+            console.log(error)
         } else {
             res.send({ status: 200, message: 'Error Reported!'});
         }
