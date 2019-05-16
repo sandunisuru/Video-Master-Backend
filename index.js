@@ -1,4 +1,5 @@
 const express = require('express');
+var nodemailer = require('nodemailer'); 
 const app = express();
 const port = process.env.PORT || 3000;
 const bodyParser = require('body-parser');
@@ -7,6 +8,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 var ytdl = require('youtube-dl');
 var cors = require('cors')
 app.use(cors())
+
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'zmxstudios@gmail.com',
+      pass: 'yqqoqzhtcbxkpwln'
+    }
+  });
 
 app.listen(port, function () {
 
@@ -47,6 +56,28 @@ app.post('/video', (req, res) => {
 
         
     })
+})
+
+app.post('/report', (req, res) => {
+
+    let message = req.body.message;
+
+    var mailOptions = {
+        from: 'zmxstudios@gmail.com',
+        to: 'sandun.isuru@gmail.com',
+        subject: 'VideoMaster Error Reporting',
+        text: message
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            res.send({ status: 501, message: error});
+        } else {
+            res.send({ status: 200, message: 'Error Reported!'});
+        }
+      }); 
+
+
 })
 
 
