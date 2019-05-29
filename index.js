@@ -34,6 +34,8 @@ app.post('/video', (req, res) => {
         source = 'facebook';
     }else if(url.includes("vimeo")){
         source = 'vimeo';
+    }else if(url.includes("pornhub")){
+        source = 'pornhub';
     }else{
         source = 'unknown';
     }
