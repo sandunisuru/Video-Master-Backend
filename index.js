@@ -22,6 +22,44 @@ app.listen(port, function () {
     console.log("Listening to Port " + port);
 });
 
+app.post('/ext_video', (req, res) => {
+    var url = req.body.url, formats = [];
+    var source = '';
+    var thumbnails = '';
+
+
+    if(url.includes("youtube") || url.includes("youtu.be")){
+        source = 'youtube';
+    }else if(url.includes("facebook")){
+        source = 'facebook';
+    }else if(url.includes("vimeo")){
+        source = 'vimeo';
+    }else if(url.includes("pornhub")){
+        source = 'pornhub';
+    }else{
+        source = 'unknown';
+    }
+
+    ytdl.getInfo(url, (err, info) => {
+        if (err) {
+            res.send({ error: 'The link you provided either not a valid url or it is not acceptable' })
+        }else{
+            thumbnails = info.thumbnails[0].url
+            info.formats.forEach(function (item) {
+                if (item.format_note !== 'DASH audio' && item.format_note !== 'DASH video') {
+                    item.filesize = item.filesize ? bytesToSize(item.filesize) : '';
+                    formats.push(item);
+                }
+            });
+            
+            res.send({meta: {id: info.id, source: source, title:info.fulltitle, duration: info._duration_hms,  thumbnails: thumbnails, formats: formats.reverse()}});
+    
+        }
+
+        
+    })
+})
+
 app.post('/video', (req, res) => {
     var url = req.body.url, formats = [];
     var source = '';
