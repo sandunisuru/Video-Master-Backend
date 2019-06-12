@@ -1,5 +1,5 @@
 const express = require('express');
-var nodemailer = require('nodemailer'); 
+var nodemailer = require('nodemailer');
 const app = express();
 const port = process.env.PORT || 3000;
 const bodyParser = require('body-parser');
@@ -12,10 +12,10 @@ app.use(cors())
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'zmxstudios@gmail.com',
-      pass: 'yqqoqzhtcbxkpwln'
+        user: 'zmxstudios@gmail.com',
+        pass: 'yqqoqzhtcbxkpwln'
     }
-  });
+});
 
 app.listen(port, function () {
 
@@ -27,37 +27,42 @@ app.post('/ext_video', (req, res) => {
     var source = '';
     var thumbnails = '';
 
-
-    if(url.includes("youtube") || url.includes("youtu.be")){
-        source = 'youtube';
-    }else if(url.includes("facebook")){
-        source = 'facebook';
-    }else if(url.includes("vimeo")){
-        source = 'vimeo';
-    }else if(url.includes("pornhub")){
-        source = 'pornhub';
-    }else{
-        source = 'unknown';
-    }
-
-    ytdl.getInfo(url, (err, info) => {
-        if (err) {
-            res.send({ error: 'The link you provided either not a valid url or it is not acceptable' })
-        }else{
-            thumbnails = info.thumbnails[0].url
-            info.formats.forEach(function (item) {
-                if (item.format_note !== 'DASH audio' && item.format_note !== 'DASH video') {
-                    item.filesize = item.filesize ? bytesToSize(item.filesize) : '';
-                    formats.push(item);
-                }
-            });
-            
-            res.send({meta: {id: info.id, source: source, title:info.fulltitle, duration: info._duration_hms,  thumbnails: thumbnails, formats: formats.reverse()}});
-    
+    if (url === "") {
+        console.log("Empty URL Request Failed")
+        res.send("URL not found")
+    } else {
+        if (url.includes("youtube") || url.includes("youtu.be")) {
+            source = 'youtube';
+        } else if (url.includes("facebook")) {
+            source = 'facebook';
+        } else if (url.includes("vimeo")) {
+            source = 'vimeo';
+        } else if (url.includes("pornhub")) {
+            source = 'pornhub';
+        } else {
+            source = 'unknown';
         }
 
-        
-    })
+        ytdl.getInfo(url, (err, info) => {
+            if (err) {
+                res.send({ error: 'The link you provided either not a valid url or it is not acceptable' })
+            } else {
+                thumbnails = info.thumbnails[0].url
+                info.formats.forEach(function (item) {
+                    if (item.format_note !== 'DASH audio' && item.format_note !== 'DASH video') {
+                        item.filesize = item.filesize ? bytesToSize(item.filesize) : '';
+                        formats.push(item);
+                    }
+                });
+
+                res.send({ meta: { id: info.id, source: source, title: info.fulltitle, duration: info._duration_hms, thumbnails: thumbnails, formats: formats.reverse() } });
+
+            }
+
+
+        })
+    }
+
 })
 
 app.post('/video', (req, res) => {
@@ -66,22 +71,22 @@ app.post('/video', (req, res) => {
     var thumbnails = '';
 
 
-    if(url.includes("youtube") || url.includes("youtu.be")){
+    if (url.includes("youtube") || url.includes("youtu.be")) {
         source = 'youtube';
-    }else if(url.includes("facebook")){
+    } else if (url.includes("facebook")) {
         source = 'facebook';
-    }else if(url.includes("vimeo")){
+    } else if (url.includes("vimeo")) {
         source = 'vimeo';
-    }else if(url.includes("pornhub")){
+    } else if (url.includes("pornhub")) {
         source = 'pornhub';
-    }else{
+    } else {
         source = 'unknown';
     }
 
     ytdl.getInfo(url, (err, info) => {
         if (err) {
             res.send({ error: 'The link you provided either not a valid url or it is not acceptable' })
-        }else{
+        } else {
             thumbnails = info.thumbnails[0].url
             info.formats.forEach(function (item) {
                 if (item.format_note !== 'DASH audio' && item.format_note !== 'DASH video') {
@@ -89,12 +94,12 @@ app.post('/video', (req, res) => {
                     formats.push(item);
                 }
             });
-            
-            res.send({meta: {id: info.id, source: source, title:info.fulltitle, duration: info._duration_hms,  thumbnails: thumbnails, formats: formats.reverse()}});
-    
+
+            res.send({ meta: { id: info.id, source: source, title: info.fulltitle, duration: info._duration_hms, thumbnails: thumbnails, formats: formats.reverse() } });
+
         }
 
-        
+
     })
 })
 
@@ -107,16 +112,16 @@ app.post('/report', (req, res) => {
         to: 'sandun.isuru@gmail.com',
         subject: 'VideoMaster Error Reporting',
         text: message
-      };
-      
-      transporter.sendMail(mailOptions, function(error, info){
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
-            res.send({ status: 501, message: error});
+            res.send({ status: 501, message: error });
             console.log(error)
         } else {
-            res.send({ status: 200, message: 'Error Reported!'});
+            res.send({ status: 200, message: 'Error Reported!' });
         }
-      }); 
+    });
 
 
 })
