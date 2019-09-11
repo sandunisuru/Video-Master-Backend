@@ -51,26 +51,24 @@ app.post("/ext_video", (req, res) => {
             "The link you provided either not a valid url or it is not acceptable"
         });
       } else {
-        thumbnails = info.thumbnails[0].url;
-        info.formats.forEach(function(item) {
-          if (
-            item.format_note !== "DASH audio" &&
-            item.format_note !== "DASH video"
-          ) {
-            item.filesize = item.filesize ? bytesToSize(item.filesize) : "";
-            formats.push(item);
-          }
-        });
+        axios
+        .get(
+          "https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=" +
+            info.id +
+            "&key=AIzaSyCMYO0YJrKHEDusCsSvT7ZbS510sSZSwKQ"
+        )
+        .then(result => {
 
-        res.send({
-          meta: {
-            id: info.id,
-            source: source,
-            title: info.fulltitle,
-            duration: info._duration_hms,
-            thumbnails: thumbnails,
-            formats: formats.reverse()
-          }
+          thumbnails = info.thumbnails[0].url
+          info.formats.forEach(function (item) {
+              if (item.format_note !== 'DASH audio' && item.format_note !== 'DASH video') {
+                  item.filesize = item.filesize ? bytesToSize(item.filesize) : '';
+                  formats.push(item);
+              }
+          });
+
+          res.send({ meta: { id: info.id, source: source, title: result.data.items[0].snippet.title, duration: info._duration_hms, thumbnails: thumbnails, formats: formats.reverse() } });
+          //res.send(info)
         });
       }
     });
