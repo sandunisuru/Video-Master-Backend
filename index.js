@@ -51,6 +51,8 @@ app.post("/ext_video", (req, res) => {
             "The link you provided either not a valid url or it is not acceptable"
         });
       } else {
+
+        console.log(info.id)
         axios
         .get(
           "https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=" +
@@ -65,11 +67,15 @@ app.post("/ext_video", (req, res) => {
                   item.filesize = item.filesize ? bytesToSize(item.filesize) : '';
                   formats.push(item);
               }
-          });
+          })
+          
 
           res.send({ meta: { id: info.id, source: source, title: result.data.items[0].snippet.title, duration: info._duration_hms, thumbnails: thumbnails, formats: formats.reverse() } });
           //res.send(info)
-        });
+        })
+        .catch(err => {
+            throw err;
+          });;
       }
     });
   }
@@ -104,7 +110,7 @@ app.post("/video", (req, res) => {
         .get(
           "https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=" +
             info.id +
-            "&key=AIzaSyCMYO0YJrKHEDusCsSvT7ZbS510sSZSwKQ"
+            "&key=AIzaSyC7KjG43otF9bOzZsOtCi89YnB2WYyfwLk"
         )
         .then(result => {
 
