@@ -13,8 +13,8 @@ app.use(cors());
 var transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "zmxstudios@gmail.com",
-    pass: "yqqoqzhtcbxkpwln"
+    user: "Username",
+    pass: "Key"
   }
 });
 
@@ -97,7 +97,7 @@ app.post("/video", (req, res) => {
         .get(
           "https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=" +
             info.id +
-            "&key=AIzaSyC7KjG43otF9bOzZsOtCi89YnB2WYyfwLk"
+            "&key=<Youtube Key>"
         )
         .then(result => {
 
@@ -120,8 +120,8 @@ app.post("/report", (req, res) => {
   let message = req.body.message;
 
   var mailOptions = {
-    from: "zmxstudios@gmail.com",
-    to: "sandun.isuru@gmail.com",
+    from: "From Email",
+    to: "To Email",
     subject: "VideoMaster Error Reporting",
     text: message
   };
