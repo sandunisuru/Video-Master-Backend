@@ -44,27 +44,43 @@ app.post("/ext_video", (req, res) => {
       source = "unknown";
     }
 
-    ytdl.getInfo(url, (err, info) => {
-      if (err) {
-        res.send({
-          error:
-            "The link you provided either not a valid url or it is not acceptable"
-        });
-      } else {
+    try {
+      ytdl.getInfo(url, (err, info) => {
+        if (err) {
+          res.send({
+            error:
+              "The link you provided either not a valid url or it is not acceptable"
+          });
+        } else {
+          thumbnails = info.thumbnails[0].url;
+          info.formats.forEach(function(item) {
+            if (
+              item.format_note !== "DASH audio" &&
+              item.format_note !== "DASH video"
+            ) {
+              item.filesize = item.filesize ? bytesToSize(item.filesize) : "";
+              formats.push(item);
+            }
+          });
 
-        thumbnails = info.thumbnails[0].url
-          info.formats.forEach(function (item) {
-              if (item.format_note !== 'DASH audio' && item.format_note !== 'DASH video') {
-                  item.filesize = item.filesize ? bytesToSize(item.filesize) : '';
-                  formats.push(item);
-              }
-          })
-          
-
-        res.send({ meta: { id: info.id, source: source, title: "Video", duration: info._duration_hms, thumbnails: thumbnails, formats: formats.reverse() } });
-          
-      }
-    });
+          res.send({
+            meta: {
+              id: info.id,
+              source: source,
+              title: "Video",
+              duration: info._duration_hms,
+              thumbnails: thumbnails,
+              formats: formats.reverse()
+            }
+          });
+        }
+      });
+    } catch (e) {
+      res.send({
+        error:
+          e.message
+      });
+    }
   }
 });
 
@@ -86,34 +102,51 @@ app.post("/video", (req, res) => {
     source = "unknown";
   }
 
-  ytdl.getInfo(url, (err, info) => {
-    if (err) {
-      res.send({
-        error:
-          "The link you provided either not a valid url or it is not acceptable"
-      });
-    } else {
-      axios
-        .get(
-          "https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=" +
-            info.id +
-            "&key=<Youtube Key>"
-        )
-        .then(result => {
-
-          thumbnails = info.thumbnails[0].url
-          info.formats.forEach(function (item) {
-              if (item.format_note !== 'DASH audio' && item.format_note !== 'DASH video') {
-                  item.filesize = item.filesize ? bytesToSize(item.filesize) : '';
-                  formats.push(item);
-              }
-          });
-
-          res.send({ meta: { id: info.id, source: source, title: result.data.items[0].snippet.title, duration: info._duration_hms, thumbnails: thumbnails, formats: formats.reverse() } });
-          //res.send(info)
+  try {
+    ytdl.getInfo(url, (err, info) => {
+      if (err) {
+        res.send({
+          error:
+            "The link you provided either not a valid url or it is not acceptable"
         });
-    }
-  });
+      } else {
+        axios
+          .get(
+            "https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=" +
+              info.id +
+              "&key=<Youtube Key>"
+          )
+          .then(result => {
+            thumbnails = info.thumbnails[0].url;
+            info.formats.forEach(function(item) {
+              if (
+                item.format_note !== "DASH audio" &&
+                item.format_note !== "DASH video"
+              ) {
+                item.filesize = item.filesize ? bytesToSize(item.filesize) : "";
+                formats.push(item);
+              }
+            });
+
+            res.send({
+              meta: {
+                id: info.id,
+                source: source,
+                title: result.data.items[0].snippet.title,
+                duration: info._duration_hms,
+                thumbnails: thumbnails,
+                formats: formats.reverse()
+              }
+            });
+            //res.send(info)
+          });
+      }
+    });
+  } catch (e) {
+    res.send({
+      error: e.message
+    });
+  }
 });
 
 app.post("/report", (req, res) => {
@@ -126,14 +159,19 @@ app.post("/report", (req, res) => {
     text: message
   };
 
-  transporter.sendMail(mailOptions, function(error, info) {
-    if (error) {
-      res.send({ status: 501, message: error });
-      console.log(error);
-    } else {
-      res.send({ status: 200, message: "Error Reported!" });
-    }
-  });
+  try{
+    transporter.sendMail(mailOptions, function(error, info) {
+      if (error) {
+        res.send({ status: 501, message: error });
+        console.log(error);
+      } else {
+        res.send({ status: 200, message: "Error Reported!" });
+      }
+    });
+  }catch(e){
+    res.send({ status: 200, message: e.message });
+  }
+  
 });
 
 function bytesToSize(bytes) {
