@@ -115,7 +115,7 @@ app.post("/video", (req, res) => {
           .get(
             "https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=" +
               info.id +
-              process.env.YOUTUBE_API_KEY
+              "&key="+process.env.YOUTUBE_API_KEY
           )
           .then(result => {
             thumbnails = info.thumbnails[0].url;
