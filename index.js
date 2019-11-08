@@ -1,6 +1,7 @@
 const express = require("express");
 var nodemailer = require("nodemailer");
 var axios = require("axios");
+require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 3000;
 const bodyParser = require("body-parser");
@@ -114,7 +115,7 @@ app.post("/video", (req, res) => {
           .get(
             "https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=" +
               info.id +
-              "&key=<Youtube Key>"
+              process.env.YOUTUBE_API_KEY
           )
           .then(result => {
             thumbnails = info.thumbnails[0].url;
