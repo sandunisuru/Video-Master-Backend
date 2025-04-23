@@ -9,6 +9,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 var ytdl = require("youtube-dl");
 var cors = require("cors");
 app.use(cors());
+require('dotenv').config();
+
+var YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 
 var transporter = nodemailer.createTransport({
   service: "gmail",
@@ -114,7 +117,7 @@ app.post("/video", (req, res) => {
           .get(
             "https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=" +
               info.id +
-              "&key=<Youtube Key>"
+              "&key=" + YOUTUBE_API_KEY
           )
           .then(result => {
             thumbnails = info.thumbnails[0].url;
