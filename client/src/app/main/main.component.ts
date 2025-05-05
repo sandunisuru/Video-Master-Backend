@@ -53,8 +53,8 @@ export class MainComponent implements OnInit {
 
   setDownload() {
     var patternYoutube = /^(https?\:\/\/)?((www\.|m\.)?youtube\.com|youtu\.?be)\/.+$/;
-    var patternFacebook = /^(https?\:\/\/)?((www\.)?facebook\.com\/(?:video\.php\?v=\d+|.*?\/videos\/\d+)).+$/;
-    var patternVimeo = /(https?\:\/\/)?((www\.)?vimeo\.com\/(\d+)).+$/;
+    var patternFacebook = /https?:\/\/(www\.)?(fb\.watch\/|facebook\.com\/watch\/?(\/live)?\/?\?v=|\/?videos\/)\d+/;
+    var patternVimeo = /https?:\/\/(www\.)?vimeo\.com\/(channels\/[a-zA-Z0-9_-]+\/)?(\d+)/;
     var patternPornhub = /(https?\:\/\/)?((www\.)?pornhub\.com\/(?:view_video\.php\?viewkey=\w+)).+$/;
 
     if (
