@@ -1,0 +1,37 @@
+<div class="jumbotron">
+  <h1 class="display-3"><i class="fas fa-cloud-download-alt"></i> Download</h1>
+
+  <hr class="my-4">
+  <div class="row center">
+    <div class="col-md-4">
+      <a [href]="videoId">
+        <img width="320" height="180" [src]='safeUrl' frameborder="0" />
+      </a>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-7">
+      <p><b>Name: </b>{{ videoName }}</p>
+      <p><b>Duration: </b>{{duration || "N/A"}}</p>
+      <div class="form-group">
+        <label for="exampleSelect1">Select Your Quality: </label>
+        <select class="form-control" id="exampleSelect1" [(ngModel)]="selectedFormat"
+          (ngModelChange)="onChange($event)">
+          <option [value]="0">Select your Quality..</option>
+          <option *ngFor="let format of formats" [value]="format.format_id">{{format.height || "N/A"}}p -
+            {{format.ext}} - {{format.filesize}}  <span class="text-danger" *ngIf="format.acodec === 'none'">| No Audio</span><option>
+        </select>
+      </div>
+
+      <p *ngIf="selectedFormatArray"><b >Size: </b>{{selectedFormatArray.filesize || "N/A" }}</p>
+      <p class="lead" *ngIf="selectedFormatArray">
+        <a class="btn btn-success btn-lg" [href]="selectedFormatArray.url" [download]="videoName" target="_blank" role="button"><i class="fas fa-download"></i>
+          Download</a>
+        <span style="margin: 4px"></span>
+        <button class="btn btn-danger btn-lg" (click)="goToHome()" role="button"><i class="far fa-plus-square"></i> Convert
+          New</button>
+      </p>
+    </div>
+  </div>
+
+
+</div>

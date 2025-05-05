@@ -1,0 +1,26 @@
+<div class="jumbotron" style="margin-top: 35px">
+  <h3>Report About Error!</h3>
+  <hr class="my-4">
+  <div class="form-group">
+    <form>
+      <label for="exampleTextarea">What is the error that you have faced?</label>
+      <div *ngIf="messgeSent" class="alert alert-dismissible alert-success">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <h4 class="alert-heading">Hurray!</h4>
+        <p class="mb-0">Your Error is reported!</p>
+      </div>
+      <div *ngIf="messgeSentFailed" class="alert alert-dismissible alert-danger">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <h4 class="alert-heading">Ooops!</h4>
+        <p class="mb-0"> {{ errorMessage }}</p>
+      </div>
+      <textarea class="form-control" id="exampleTextarea" rows="3" name="message" [(ngModel)]="message"
+        (ngModelChange)="setLetterCount($event)" placeholder="Minimum 10 Letters"></textarea>
+      <label for="exampleTextarea">{{wordCount}} / 2000</label>
+      <br />
+      <button *ngIf="!sending" type="button" (click)="sendEmail()" class="btn btn-danger btn-lg">Submit</button>
+      <button type="button" *ngIf="sending" (click)="sendEmail()" class="btn btn-danger btn-lg"><span
+          class="spinner-border spinner-border-lg" role="status" aria-hidden="true"></span> Sending...</button>
+    </form>
+  </div>
+</div>

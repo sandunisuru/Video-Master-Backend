@@ -1,0 +1,33 @@
+<div class="jumbotron">
+  <h1 class="display-3">Download your favourite <span id="myElement"></span></h1>
+  <h2 class="">Videos, Just one click.</h2>
+  <hr class="my-4">
+
+  <div *ngIf="linkInvalid" class="alert alert-dismissible alert-danger">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <h4 class="alert-heading">Invalid Video Link!</h4>
+    <p class="mb-0">Link you have entered is Invalid. Please Check and Try Again!</p>
+  </div>
+  <div *ngIf="videoInvalid" class="alert alert-dismissible alert-danger">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <h4 class="alert-heading">Ooops!</h4>
+      <p class="mb-0">This video can't be downloads!</p>
+    </div>
+  <form>
+    <div class="center">
+      <input type="url" name="url" [(ngModel)]="url" class="form-control"
+        placeholder="https://www.youtube.com/watch?v=jNQXAC9IVRw">
+      <p><small>To download a video just insert a link!.</small></p>
+      <p class="lead">
+        <button *ngIf="!downloadClicked" class="btn btn-primary btn-lg" (click)="setDownload()" role="button"><i
+            class="fas fa-cloud-download-alt"></i> Download</button>
+        <button *ngIf="downloadClicked" class="btn btn-primary btn-lg" role="button"><span
+            class="spinner-border spinner-border-lg text-danger" role="status" aria-hidden="true"></span>
+          Downloading...</button>
+      </p>
+
+    </div>
+
+  </form>
+
+</div>
